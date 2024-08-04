@@ -1,8 +1,9 @@
 import os
 import requests
 from telegram import Update, Bot
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-
+from telegram.ext import Updater, Application, CommandHandler, MessageHandler, filters, CallbackContext
+import requests
+import os
 # Replace these with your actual tokens
 TELEGRAM_BOT_TOKEN = '6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g'
 DOODSTREAM_API_KEY = '54845tb4kbkj7svvyig18'
