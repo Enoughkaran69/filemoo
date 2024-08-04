@@ -1,15 +1,16 @@
 import os
 import requests
 from telegram import Update, Bot
-from telegram.ext import Updater, Application, CommandHandler, MessageHandler, filters, CallbackContext
+from telegram.ext import Updater, Application, CommandHandler, MessageHandler, ContextTypes, filters, CallbackContext
 import requests
 import os
 # Replace these with your actual tokens
 TELEGRAM_BOT_TOKEN = '6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g'
 DOODSTREAM_API_KEY = '54845tb4kbkj7svvyig18'
 
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Send me a video file and I will upload it to DoodStream.')
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await update.message.reply_text('Send me a video file and I will upload it to DoodStream.')
+
 
 def upload_to_doodstream(file_path: str) -> str:
     url = 'https://filemoonapi.com/api/upload/server'
@@ -25,16 +26,16 @@ def upload_to_doodstream(file_path: str) -> str:
     response = requests.post(f'{upload_server}/upload', files=files, data={'key': DOODSTREAM_API_KEY})
     return response.json()['result']['filecode']
 
-def handle_video(update: Update, context: CallbackContext) -> None:
+async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     video = update.message.video
     file_id = video.file_id
-    file = context.bot.get_file(file_id)
+    file = await context.bot.get_file(file_id)
     file_path = f'./{file_id}.mp4'
-    file.download(file_path)
+    await file.download_to_drive(file_path)
 
     try:
         video_link = upload_to_doodstream(file_path)
-        update.message.reply_text(f'Here is your video link: {video_link}')
+        await update.message.reply_text(f'Here is your video link: {video_link}')
     finally:
         os.remove(file_path)
 
@@ -47,7 +48,7 @@ def main() -> None:
     application = Application.builder().token('6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g').build()
 
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.video, handle_video))
+    application.add_handler(MessageHandler(filters.VIDEO, handle_video))
    
 
     set_webhook()  # Set webhook if not already set
