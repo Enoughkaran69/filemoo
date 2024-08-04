@@ -4,14 +4,14 @@ from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
 # Replace these with your actual tokens
-TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
-DOODSTREAM_API_KEY = 'YOUR_DOODSTREAM_API_KEY'
+TELEGRAM_BOT_TOKEN = '6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g'
+DOODSTREAM_API_KEY = '54845tb4kbkj7svvyig18'
 
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Send me a video file and I will upload it to DoodStream.')
 
 def upload_to_doodstream(file_path: str) -> str:
-    url = 'https://doodapi.com/api/upload/server'
+    url = 'https://filemoonapi.com/api/upload/server'
     params = {
         'key': DOODSTREAM_API_KEY
     }
@@ -22,7 +22,7 @@ def upload_to_doodstream(file_path: str) -> str:
         'file': open(file_path, 'rb')
     }
     response = requests.post(f'{upload_server}/upload', files=files, data={'key': DOODSTREAM_API_KEY})
-    return response.json()['result']['download_url']
+    return response.json()['result']['filecode']
 
 def handle_video(update: Update, context: CallbackContext) -> None:
     video = update.message.video
