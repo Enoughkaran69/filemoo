@@ -38,15 +38,26 @@ def handle_video(update: Update, context: CallbackContext) -> None:
     finally:
         os.remove(file_path)
 
+def set_webhook():
+    webhook_url = 'https://filemoo.onrender.com'
+    response = requests.get(f'https://api.telegram.org/bot6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g/setWebhook?url={webhook_url}')
+    return response.json()
+
 def main() -> None:
-    updater = Updater(TELEGRAM_BOT_TOKEN)
+    application = Application.builder().token('6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g').build()
 
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.video, handle_video))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    updater.start_polling()
-    updater.idle()
+    set_webhook()  # Set webhook if not already set
+
+    application.run_webhook(
+        listen='0.0.0.0',
+        port=8443,
+        url_path='6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g',
+        webhook_url=f'https://filemoo.onrender.com/6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g'
+    )
+
 
 if __name__ == '__main__':
     main()
