@@ -47,7 +47,8 @@ def main() -> None:
     application = Application.builder().token('6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g').build()
 
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    application.add_handler(MessageHandler(Filters.video, handle_video))
+   
 
     set_webhook()  # Set webhook if not already set
 
