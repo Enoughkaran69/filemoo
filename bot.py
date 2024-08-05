@@ -91,7 +91,7 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             await update.message.reply_text(f'{video_link}')
             
         else:
-            keyboard = [[InlineKeyboardButton("Try Again", callback_data=f"retry:{file_id}")]]
+            keyboard = [[InlineKeyboardButton("Try Again", callback_data=f"retry:{file_path}")]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             retry_msg = await update.message.reply_text('Failed to upload the video to DoodStream.', reply_markup=reply_markup)
 
@@ -108,7 +108,7 @@ async def retry_upload(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await file.download_to_drive(file_path)
     await retry_msg.delete()
     uploading_message = await query.message.reply_text('Retrying upload...')
-    await update.message.reply_text(f'{file.file_path}')
+    
 
     try:
         video_link = upload_to_doodstream(file_path, query, context)
@@ -116,7 +116,7 @@ async def retry_upload(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             await query.message.reply_text(f'{video_link}')
         
         else:
-            keyboard = [[InlineKeyboardButton("Try Again", callback_data=f"retry:{file_id}")]]
+            keyboard = [[InlineKeyboardButton("Try Again", callback_data=f"retry:{file_path}")]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             retry_msg = await query.message.reply_text('Failed to upload the video to DoodStream.', reply_markup=reply_markup)
     finally:
