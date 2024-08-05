@@ -39,7 +39,7 @@ except requests.exceptions.RequestException as e:
     print(f"HTTP Request failed: {e}")
        
 
-        files = {
+ files = {
             'file': open(file_path, 'rb')
         }
         response = requests.post(upload_server, files=files, data={'key': DOODSTREAM_API_KEY})
