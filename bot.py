@@ -17,7 +17,7 @@ def upload_to_doodstream(file_path: str) -> str:
     params = {
         'key': DOODSTREAM_API_KEY
     }
-    
+    try: 
         response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
@@ -33,6 +33,12 @@ def upload_to_doodstream(file_path: str) -> str:
     }
     response = requests.post(f'{upload_server}/upload', files=files, data={'key': DOODSTREAM_API_KEY})
     return response.json()['result']['filecode']
+except requests.exceptions.RequestException as e:
+        print(f"HTTP Request failed: {e}")
+        return None
+except ValueError as e:
+        print(f"JSON decode failed: {e}")
+        return None
 
 async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     video = update.message.video
