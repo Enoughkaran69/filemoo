@@ -91,9 +91,8 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             await update.message.reply_text(f'{video_link}')
             
         else:
-            keyboard = [[InlineKeyboardButton("Try Again", callback_data=f"retry:{file_path}")]]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            retry_msg = await update.message.reply_text('Failed to upload the video to DoodStream.', reply_markup=reply_markup)
+            
+            retry_msg = await update.message.reply_text('Failed to upload the video to DoodStream.')
 
     finally:
         await uploading_message.delete()
