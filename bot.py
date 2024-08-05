@@ -23,27 +23,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def upload_to_doodstream(file_path: str) -> str:
     url = 'https://filemoonapi.com/api/upload/server'
-    params = {
-        'key': DOODSTREAM_API_KEY
-    }
-    headers = {
-        'Authorization': f'Bearer {DOODSTREAM_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-    try:
-        response = requests.get(url, params=params, headers=headers)
-        response.raise_for_status()
+params = {
+    'key': DOODSTREAM_API_KEY
+}
 
-        try:
-            data = response.json()
-        except ValueError:
-            print("Response content is not valid JSON")
-            return None
-
-        if 'result' not in data:
-            raise ValueError("Unexpected response format: " + str(data))
-
+try:
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    print("Response:", response.json())
+    data = response.json()
+    if 'result' in data:
         upload_server = data['result']
+        print(upload_server)
+except requests.exceptions.RequestException as e:
+    print(f"HTTP Request failed: {e}")
        
 
         files = {
