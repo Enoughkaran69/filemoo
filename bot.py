@@ -4,6 +4,15 @@ from telegram import Update, Bot
 from telegram.ext import Updater, Application, CommandHandler, MessageHandler, ContextTypes, filters, CallbackContext
 import requests
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
 # Replace these with your actual tokens
 TELEGRAM_BOT_TOKEN = '6051397318:AAHxaVj81gfjjfxAcK2lE76EaAwvpwr7a2g'
 DOODSTREAM_API_KEY = '54845tb4kbkj7svvyig18'
