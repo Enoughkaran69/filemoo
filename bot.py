@@ -17,28 +17,45 @@ def upload_to_doodstream(file_path: str) -> str:
     params = {
         'key': DOODSTREAM_API_KEY
     }
-    try: 
+    try:
         response = requests.get(url, params=params)
         response.raise_for_status()
-        data = response.json()
+
+        try:
+            data = response.json()
+        except ValueError:
+            print("Response content is not valid JSON")
+            return None
+
         if 'result' not in data:
             raise ValueError("Unexpected response format: " + str(data))
 
         upload_server = data['result']
-        
-        upload_server = data['result']['server']
 
-    files = {
-        'file': open(file_path, 'rb')
-    }
-    response = requests.post(f'{upload_server}/upload', files=files, data={'key': DOODSTREAM_API_KEY})
-    return response.json()['result']['filecode']
-except requests.exceptions.RequestException as e:
+        files = {
+            'file': open(file_path, 'rb')
+        }
+        response = requests.post(upload_server, files=files, data={'key': DOODSTREAM_API_KEY})
+        response.raise_for_status()
+
+        try:
+            data = response.json()
+        except ValueError:
+            print("Response content is not valid JSON")
+            return None
+
+        if 'result' not in data or 'filecode' not in data['result']:
+            raise ValueError("Unexpected response format: " + str(data))
+
+        return data['result']['filecode']
+    except requests.exceptions.RequestException as e:
         print(f"HTTP Request failed: {e}")
         return None
-except ValueError as e:
+    except ValueError as e:
         print(f"JSON decode failed: {e}")
         return None
+
+    
 
 async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     video = update.message.video
@@ -49,7 +66,10 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
     try:
         video_link = upload_to_doodstream(file_path)
-        await update.message.reply_text(f'Here is your video link: {video_link}')
+        if video_link:
+            await update.message.reply_text(f'Here is your video link: {video_link}')
+        else:
+            await update.message.reply_text('Failed to upload the video to DoodStream.')
     finally:
         os.remove(file_path)
 
