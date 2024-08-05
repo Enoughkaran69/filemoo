@@ -30,9 +30,11 @@ def upload_to_doodstream(file_path: str, update: Update, context: ContextTypes.D
         response = requests.get(url, params=params)
         response.raise_for_status()
         print("Response:", response.json())
+        logger.info(f"Response: {response.json()}")
         data = response.json()
         if 'result' in data:
             upload_server = data['result']
+            logger.info(f"Upload Server: {upload_server}")
             print(upload_server)
             
             total_size = os.path.getsize(file_path)
@@ -50,6 +52,7 @@ def upload_to_doodstream(file_path: str, update: Update, context: ContextTypes.D
                     data={'key': DOODSTREAM_API_KEY}
                 )
                 response.raise_for_status()
+                logger.info(f"Upload Response: {response.json()}")
                 progress += len(f.read())
                 percent_complete = (progress / total_size) * 100
                 current_time = time()
