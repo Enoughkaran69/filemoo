@@ -44,7 +44,7 @@ def upload_to_doodstream(file_path: str) -> str:
             raise ValueError("Unexpected response format: " + str(data))
 
         upload_server = data['result']
-        await update.message.reply_text(upload_server)
+       
 
         files = {
             'file': open(file_path, 'rb')
@@ -84,6 +84,7 @@ async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             await update.message.reply_text(f'Here is your video link: {video_link}')
         else:
             await update.message.reply_text('Failed to upload the video to DoodStream.')
+            await update.message.reply_text(upload_server)
     finally:
         os.remove(file_path)
 
