@@ -26,8 +26,12 @@ def upload_to_doodstream(file_path: str) -> str:
     params = {
         'key': DOODSTREAM_API_KEY
     }
+    headers = {
+        'Authorization': f'Bearer {DOODSTREAM_API_KEY}',
+        'Content-Type': 'application/json'
+    }
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, headers=headers)
         response.raise_for_status()
 
         try:
