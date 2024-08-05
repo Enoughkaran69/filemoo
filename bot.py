@@ -17,8 +17,16 @@ def upload_to_doodstream(file_path: str) -> str:
     params = {
         'key': DOODSTREAM_API_KEY
     }
-    response = requests.get(url, params=params)
-    upload_server = response.json()['result']['server']
+    
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+        if 'result' not in data:
+            raise ValueError("Unexpected response format: " + str(data))
+
+        upload_server = data['result']
+        
+        upload_server = data['result']['server']
 
     files = {
         'file': open(file_path, 'rb')
